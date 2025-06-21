@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PGP Andy</string>
+    <string name="menu_contacts">Контакты</string>
+    <string name="menu_create_message">Создать сообщение</string>
+    <string name="cd_menu">Меню</string>
+    <string name="cd_search">Поиск</string>
+    <string name="cd_lock">Блокировать</string>
+    <string name="cd_theme">Тема</string>
+    <string name="cd_language">Выбрать язык</string>
+    <string name="language_en">English</string>
+    <string name="language_es">Español</string>
+    <string name="language_fr">Français</string>
+    <string name="language_ru">Русский</string>
+    <string name="title_pgp_contact">PGP контакт</string>
+    <string name="label_name">Имя</string>
+    <string name="label_public_key">Публичный ключ</string>
+    <string name="action_save">Сохранить</string>
+    <string name="title_create_message">Создать сообщение</string>
+    <string name="label_recipient">Получатель</string>
+    <string name="label_message">Сообщение</string>
+    <string name="action_send">Отправить</string>
+    <string name="msg_no_contacts">Контакты отсутствуют</string>
+    <string name="cd_add_contact">Добавить контакт</string>
+</resources>

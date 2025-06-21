@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Language
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -19,7 +20,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.launch
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
+import com.example.pgpandy.R
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,20 +41,21 @@ fun PGPAndyApp() {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var screen by remember { mutableStateOf(Screen.ContactList) }
+    var languageMenuExpanded by remember { mutableStateOf(false) }
 
     MaterialTheme(colorScheme = if (darkTheme) darkColorScheme() else lightColorScheme()) {
         ModalNavigationDrawer(
             drawerState = drawerState,
             drawerContent = {
                 ModalDrawerSheet {
-                    Text("PGPAndy", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleMedium)
+                    Text(stringResource(R.string.app_name), modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleMedium)
                     NavigationDrawerItem(
-                        label = { Text("Contacts") },
+                        label = { Text(stringResource(R.string.menu_contacts)) },
                         selected = screen == Screen.ContactList,
                         onClick = { screen = Screen.ContactList; scope.launch { drawerState.close() } }
                     )
                     NavigationDrawerItem(
-                        label = { Text("Create Message") },
+                        label = { Text(stringResource(R.string.menu_create_message)) },
                         selected = screen == Screen.Message,
                         onClick = { screen = Screen.Message; scope.launch { drawerState.close() } }
                     )
@@ -59,24 +65,47 @@ fun PGPAndyApp() {
             Scaffold(
                 topBar = {
                     SmallTopAppBar(
-                        title = { Text("PGPAndy") },
+                        title = { Text(stringResource(R.string.app_name)) },
                         navigationIcon = {
                             IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                                Icon(Icons.Default.Menu, contentDescription = "Menu")
+                                Icon(Icons.Default.Menu, contentDescription = stringResource(R.string.cd_menu))
                             }
                         },
                         actions = {
                             IconButton(onClick = { /* search */ }) {
-                                Icon(Icons.Default.Search, contentDescription = "Search")
+                                Icon(Icons.Default.Search, contentDescription = stringResource(R.string.cd_search))
                             }
                             IconButton(onClick = { /* lock */ }) {
-                                Icon(Icons.Default.Lock, contentDescription = "Lock")
+                                Icon(Icons.Default.Lock, contentDescription = stringResource(R.string.cd_lock))
                             }
                             IconButton(onClick = { darkTheme = !darkTheme }) {
                                 Icon(
                                     if (darkTheme) Icons.Default.LightMode else Icons.Default.DarkMode,
-                                    contentDescription = "Theme"
+                                    contentDescription = stringResource(R.string.cd_theme)
                                 )
+                            }
+                            Box {
+                                IconButton(onClick = { languageMenuExpanded = true }) {
+                                    Icon(Icons.Default.Language, contentDescription = stringResource(R.string.cd_language))
+                                }
+                                DropdownMenu(expanded = languageMenuExpanded, onDismissRequest = { languageMenuExpanded = false }) {
+                                    DropdownMenuItem(text = { Text(stringResource(R.string.language_en)) }, onClick = {
+                                        languageMenuExpanded = false
+                                        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags("en-US"))
+                                    })
+                                    DropdownMenuItem(text = { Text(stringResource(R.string.language_es)) }, onClick = {
+                                        languageMenuExpanded = false
+                                        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags("es-MX"))
+                                    })
+                                    DropdownMenuItem(text = { Text(stringResource(R.string.language_fr)) }, onClick = {
+                                        languageMenuExpanded = false
+                                        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags("fr"))
+                                    })
+                                    DropdownMenuItem(text = { Text(stringResource(R.string.language_ru)) }, onClick = {
+                                        languageMenuExpanded = false
+                                        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags("ru"))
+                                    })
+                                }
                             }
                         }
                     )
@@ -108,16 +137,16 @@ fun ContactForm(onSaved: () -> Unit) {
     var key by remember { mutableStateOf("") }
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Text("PGP Contact", style = MaterialTheme.typography.titleMedium)
-        OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("Name") }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(value = key, onValueChange = { key = it }, label = { Text("Public Key") }, modifier = Modifier.fillMaxWidth())
+        Text(stringResource(R.string.title_pgp_contact), style = MaterialTheme.typography.titleMedium)
+        OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text(stringResource(R.string.label_name)) }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(value = key, onValueChange = { key = it }, label = { Text(stringResource(R.string.label_public_key)) }, modifier = Modifier.fillMaxWidth())
         Button(
             onClick = {
                 ContactRepository.contacts.add(Contact(name, key))
                 onSaved()
             },
             modifier = Modifier.align(Alignment.End)
-        ) { Text("Save") }
+        ) { Text(stringResource(R.string.action_save)) }
     }
 }
 
@@ -127,10 +156,10 @@ fun MessageForm() {
     var message by remember { mutableStateOf("") }
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Text("Create Message", style = MaterialTheme.typography.titleMedium)
-        OutlinedTextField(value = recipient, onValueChange = { recipient = it }, label = { Text("Recipient") }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(value = message, onValueChange = { message = it }, label = { Text("Message") }, modifier = Modifier.fillMaxWidth())
-        Button(onClick = { /* send */ }, modifier = Modifier.align(Alignment.End)) { Text("Send") }
+        Text(stringResource(R.string.title_create_message), style = MaterialTheme.typography.titleMedium)
+        OutlinedTextField(value = recipient, onValueChange = { recipient = it }, label = { Text(stringResource(R.string.label_recipient)) }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(value = message, onValueChange = { message = it }, label = { Text(stringResource(R.string.label_message)) }, modifier = Modifier.fillMaxWidth())
+        Button(onClick = { /* send */ }, modifier = Modifier.align(Alignment.End)) { Text(stringResource(R.string.action_send)) }
     }
 }
 
@@ -140,7 +169,7 @@ fun ContactListScreen(onAddContact: () -> Unit) {
 
     Box(modifier = Modifier.fillMaxSize()) {
         if (contacts.isEmpty()) {
-            Text("No contacts added", modifier = Modifier.align(Alignment.Center))
+            Text(stringResource(R.string.msg_no_contacts), modifier = Modifier.align(Alignment.Center))
         } else {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(contacts) { contact ->
@@ -157,7 +186,7 @@ fun ContactListScreen(onAddContact: () -> Unit) {
             onClick = onAddContact,
             modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
         ) {
-            Icon(Icons.Default.Add, contentDescription = "Add Contact")
+            Icon(Icons.Default.Add, contentDescription = stringResource(R.string.cd_add_contact))
         }
     }
 }
