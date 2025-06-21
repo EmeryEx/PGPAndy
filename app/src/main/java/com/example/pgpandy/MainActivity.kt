@@ -29,6 +29,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PGPAndyApp() {
     var darkTheme by remember { mutableStateOf(false) }
@@ -144,8 +145,8 @@ fun ContactListScreen(onAddContact: () -> Unit) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(contacts) { contact ->
                     ListItem(
-                        headlineText = { Text(contact.name) },
-                        supportingText = { Text(contact.publicKey) }
+                        headlineContent = { Text(contact.name) },
+                        supportingContent = { Text(contact.publicKey) }
                     )
                     Divider()
                 }
