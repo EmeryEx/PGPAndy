@@ -1,6 +1,8 @@
 package com.example.pgpandy
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.icons.Icons
@@ -33,19 +35,27 @@ import androidx.compose.ui.platform.LocalContext
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         // Initialize local database on first launch. This will create tables
         // or run migrations as needed based on the defined DB version.
         DatabaseHelper(this).writableDatabase
+
+        val savedLanguage = DatabaseHelper(this).getPreference("language")
+        val language = if (!savedLanguage.isNullOrEmpty()) savedLanguage else "en-US"
+        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(language))
+
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        setContent { PGPAndyApp() }
+        setContent {
+            PGPAndyApp(language ?: "")
+        }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PGPAndyApp() {
+fun PGPAndyApp(initialLanguageTag: String) {
     var darkTheme by remember { mutableStateOf(false) }
-    var languageTag by remember { mutableStateOf("") }
+    var languageTag by remember { mutableStateOf(initialLanguageTag) }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var screen by remember { mutableStateOf(Screen.ContactList) }
@@ -54,20 +64,10 @@ fun PGPAndyApp() {
 
     LaunchedEffect(Unit) {
         darkTheme = DatabaseHelper(context).getPreference("dark_theme") == "1"
-        DatabaseHelper(context).getPreference("language")?.let {
-            languageTag = it
-            AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(it))
-        }
     }
 
     LaunchedEffect(darkTheme) {
         DatabaseHelper(context).setPreference("dark_theme", if (darkTheme) "1" else "0")
-    }
-
-    LaunchedEffect(languageTag) {
-        if (languageTag.isNotEmpty()) {
-            DatabaseHelper(context).setPreference("language", languageTag)
-        }
     }
 
     MaterialTheme(colorScheme = if (darkTheme) darkColorScheme() else lightColorScheme()) {
@@ -179,22 +179,51 @@ fun PGPAndyApp() {
                                     Icon(Icons.Default.Language, contentDescription = stringResource(R.string.cd_language))
                                 }
                                 DropdownMenu(expanded = languageMenuExpanded, onDismissRequest = { languageMenuExpanded = false }) {
-                                    DropdownMenuItem(text = { Text(stringResource(R.string.language_en)) }, onClick = {
-                                        languageMenuExpanded = false
-                                        languageTag = "en-US"
-                                        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageTag))
-                                    })
-                                    DropdownMenuItem(text = { Text(stringResource(R.string.language_es)) }, onClick = {
-                                        languageMenuExpanded = false
-                                        languageTag = "es-MX"
-                                        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageTag))
-                                    })
-                                    DropdownMenuItem(text = { Text(stringResource(R.string.language_fr)) }, onClick = {
+                                    DropdownMenuItem(
+                                        text = { Text(
+                                            text = stringResource(R.string.language_en),
+                                            color = if (languageTag == "en-US") Color.Red else Color.Unspecified
+                                        ) },
+                                        onClick = {
+                                            languageMenuExpanded = false
+                                            val newLang = "en-US"
+                                            if (languageTag != newLang) {
+                                                DatabaseHelper(context).setPreference("language", newLang)
+                                                AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(newLang))
+                                                (context as? ComponentActivity)?.recreate()
+                                            }
+                                        },
+                                        modifier = Modifier.background(
+                                            if (languageTag == "en-US") Color(0x33229020) else Color.Transparent
+                                        )
+                                    )
+                                    DropdownMenuItem(
+                                        text = {Text(
+                                            text = stringResource(R.string.language_es),
+                                            color = if (languageTag == "es-MX") Color.Red else Color.Unspecified
+                                        )},
+                                        onClick = {
+                                            languageMenuExpanded = false
+                                            val newLang = "es-MX"
+                                            if (languageTag != newLang) {
+                                                DatabaseHelper(context).setPreference("language", newLang)
+                                                AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(newLang))
+                                                (context as? ComponentActivity)?.recreate()
+                                            }
+                                        }
+                                    )
+                                    DropdownMenuItem(text = { Text(
+                                        text = stringResource(R.string.language_fr),
+                                        color = if (languageTag == "fr") Color.Red else Color.Unspecified
+                                    ) }, onClick = {
                                         languageMenuExpanded = false
                                         languageTag = "fr"
                                         AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageTag))
                                     })
-                                    DropdownMenuItem(text = { Text(stringResource(R.string.language_ru)) }, onClick = {
+                                    DropdownMenuItem(text = { Text(
+                                        text = stringResource(R.string.language_ru),
+                                        color = if (languageTag == "ru") Color.Red else Color.Unspecified
+                                    ) }, onClick = {
                                         languageMenuExpanded = false
                                         languageTag = "ru"
                                         AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageTag))
