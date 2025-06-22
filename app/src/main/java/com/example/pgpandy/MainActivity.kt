@@ -45,6 +45,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun PGPAndyApp() {
     var darkTheme by remember { mutableStateOf(false) }
+    var languageTag by remember { mutableStateOf("") }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var screen by remember { mutableStateOf(Screen.ContactList) }
@@ -53,10 +54,20 @@ fun PGPAndyApp() {
 
     LaunchedEffect(Unit) {
         darkTheme = DatabaseHelper(context).getPreference("dark_theme") == "1"
+        DatabaseHelper(context).getPreference("language")?.let {
+            languageTag = it
+            AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(it))
+        }
     }
 
     LaunchedEffect(darkTheme) {
         DatabaseHelper(context).setPreference("dark_theme", if (darkTheme) "1" else "0")
+    }
+
+    LaunchedEffect(languageTag) {
+        if (languageTag.isNotEmpty()) {
+            DatabaseHelper(context).setPreference("language", languageTag)
+        }
     }
 
     MaterialTheme(colorScheme = if (darkTheme) darkColorScheme() else lightColorScheme()) {
@@ -170,19 +181,23 @@ fun PGPAndyApp() {
                                 DropdownMenu(expanded = languageMenuExpanded, onDismissRequest = { languageMenuExpanded = false }) {
                                     DropdownMenuItem(text = { Text(stringResource(R.string.language_en)) }, onClick = {
                                         languageMenuExpanded = false
-                                        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags("en-US"))
+                                        languageTag = "en-US"
+                                        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageTag))
                                     })
                                     DropdownMenuItem(text = { Text(stringResource(R.string.language_es)) }, onClick = {
                                         languageMenuExpanded = false
-                                        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags("es-MX"))
+                                        languageTag = "es-MX"
+                                        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageTag))
                                     })
                                     DropdownMenuItem(text = { Text(stringResource(R.string.language_fr)) }, onClick = {
                                         languageMenuExpanded = false
-                                        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags("fr"))
+                                        languageTag = "fr"
+                                        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageTag))
                                     })
                                     DropdownMenuItem(text = { Text(stringResource(R.string.language_ru)) }, onClick = {
                                         languageMenuExpanded = false
-                                        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags("ru"))
+                                        languageTag = "ru"
+                                        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageTag))
                                     })
                                 }
                             }
