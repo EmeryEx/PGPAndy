@@ -30,6 +30,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Initialize local database on first launch. This will create tables
+        // or run migrations as needed based on the defined DB version.
+        DatabaseHelper(this).writableDatabase
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent { PGPAndyApp() }
     }
