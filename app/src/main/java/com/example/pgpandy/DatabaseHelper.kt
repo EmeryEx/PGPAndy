@@ -3,6 +3,7 @@ package com.example.pgpandy
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.content.ContentValues
 
 private const val DB_NAME = "pgpandy.db"
 private const val DB_VERSION = 1
@@ -63,5 +64,27 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null
         if (oldVersion != newVersion) {
 
         }
+    }
+
+    fun getPreference(name: String): String? {
+        readableDatabase.rawQuery(
+            "SELECT value FROM preferences WHERE name = ?",
+            arrayOf(name)
+        ).use { cursor ->
+            return if (cursor.moveToFirst()) cursor.getString(0) else null
+        }
+    }
+
+    fun setPreference(name: String, value: String) {
+        val values = ContentValues().apply {
+            put("name", name)
+            put("value", value)
+        }
+        writableDatabase.insertWithOnConflict(
+            "preferences",
+            null,
+            values,
+            SQLiteDatabase.CONFLICT_REPLACE
+        )
     }
 }
