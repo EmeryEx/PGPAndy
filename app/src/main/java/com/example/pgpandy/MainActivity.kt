@@ -8,8 +8,6 @@ import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -23,8 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.launch
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.background
+import androidx.compose.material.icons.filled.Send
+import androidx.compose.ui.graphics.Color
 import androidx.core.os.LocaleListCompat
-import com.example.pgpandy.R
+import androidx.compose.foundation.shape.RoundedCornerShape
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,17 +48,41 @@ fun PGPAndyApp() {
         ModalNavigationDrawer(
             drawerState = drawerState,
             drawerContent = {
-                ModalDrawerSheet {
-                    Text(stringResource(R.string.app_name), modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleMedium)
+                ModalDrawerSheet(
+                    modifier = Modifier.width(300.dp),
+                    drawerContainerColor = if (darkTheme) Color(0xFF222222) else MaterialTheme.colorScheme.background,
+                    drawerShape = RoundedCornerShape(0.dp) // <-- removes rounded corner
+                ) {
+                    Text(stringResource(R.string.app_name), color = if (darkTheme) Color.White else Color.DarkGray, modifier = Modifier
+                        .background(Color.Transparent).padding(16.dp).fillMaxWidth(),
+                        style = MaterialTheme.typography.titleMedium)
                     NavigationDrawerItem(
                         label = { Text(stringResource(R.string.menu_contacts)) },
                         selected = screen == Screen.ContactList,
-                        onClick = { screen = Screen.ContactList; scope.launch { drawerState.close() } }
+                        onClick = { screen = Screen.ContactList; scope.launch { drawerState.close() } },
+                        shape = RoundedCornerShape(0.dp),
+                        colors = NavigationDrawerItemDefaults.colors(
+                            selectedContainerColor = Color(0xFF440020),
+                            unselectedContainerColor = if (darkTheme) Color(0xFF252525) else Color.White,
+                            selectedTextColor = Color.White,
+                            unselectedTextColor = if (darkTheme) Color.White else Color(0xFF220020),
+                            selectedIconColor = Color.White,
+                            unselectedIconColor = Color(0xFF220020)
+                        )
                     )
                     NavigationDrawerItem(
                         label = { Text(stringResource(R.string.menu_create_message)) },
                         selected = screen == Screen.Message,
-                        onClick = { screen = Screen.Message; scope.launch { drawerState.close() } }
+                        onClick = { screen = Screen.Message; scope.launch { drawerState.close() } },
+                        shape = RoundedCornerShape(0.dp),
+                        colors = NavigationDrawerItemDefaults.colors(
+                            selectedContainerColor = Color(0xFF440020),
+                            unselectedContainerColor = if (darkTheme) Color(0xFF252525) else Color.White,
+                            selectedTextColor = Color.White,
+                            unselectedTextColor = if (darkTheme) Color.White else Color(0xFF220020),
+                            selectedIconColor = Color.White,
+                            unselectedIconColor = Color(0xFF220020)
+                        )
                     )
                 }
             }
@@ -72,9 +97,6 @@ fun PGPAndyApp() {
                             }
                         },
                         actions = {
-                            IconButton(onClick = { /* search */ }) {
-                                Icon(Icons.Default.Search, contentDescription = stringResource(R.string.cd_search))
-                            }
                             IconButton(onClick = { /* lock */ }) {
                                 Icon(Icons.Default.Lock, contentDescription = stringResource(R.string.cd_lock))
                             }
@@ -159,7 +181,17 @@ fun MessageForm() {
         Text(stringResource(R.string.title_create_message), style = MaterialTheme.typography.titleMedium)
         OutlinedTextField(value = recipient, onValueChange = { recipient = it }, label = { Text(stringResource(R.string.label_recipient)) }, modifier = Modifier.fillMaxWidth())
         OutlinedTextField(value = message, onValueChange = { message = it }, label = { Text(stringResource(R.string.label_message)) }, modifier = Modifier.fillMaxWidth())
-        Button(onClick = { /* send */ }, modifier = Modifier.align(Alignment.End)) { Text(stringResource(R.string.action_send)) }
+        Button(
+            onClick = { /* send */ },
+            modifier = Modifier.align(Alignment.End),
+            shape = RoundedCornerShape(6.dp), // adjust for subtle rounding
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF440020), // custom hex background
+                contentColor = Color.White
+            )
+        ) {
+            Text(stringResource(R.string.action_send))
+        }
     }
 }
 
@@ -184,9 +216,11 @@ fun ContactListScreen(onAddContact: () -> Unit) {
 
         FloatingActionButton(
             onClick = onAddContact,
-            modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
+            modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
+            containerColor = Color(0xFF440020),
+            contentColor = Color.White
         ) {
-            Icon(Icons.Default.Add, contentDescription = stringResource(R.string.cd_add_contact))
+            Icon(Icons.Default.Send, contentDescription = stringResource(R.string.cd_add_contact))
         }
     }
 }
