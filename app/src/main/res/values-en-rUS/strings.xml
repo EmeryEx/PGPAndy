@@ -33,4 +33,6 @@
     <string name="label_notes">Embedded Notes</string>
     <string name="action_create">Create</string>
     <string name="action_close">Close</string>
+    <string name="action_import">Import</string>
+    <string name="cd_import_key">Import Key</string>
 </resources>
