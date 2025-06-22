@@ -33,4 +33,6 @@
     <string name="label_notes">Notas</string>
     <string name="action_create">Crear</string>
     <string name="action_close">Cerrar</string>
+    <string name="action_import">Importar</string>
+    <string name="cd_import_key">Importar clave</string>
 </resources>

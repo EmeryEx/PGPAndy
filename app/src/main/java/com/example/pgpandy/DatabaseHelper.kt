@@ -87,4 +87,28 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null
             SQLiteDatabase.CONFLICT_REPLACE
         )
     }
+
+    /**
+     * Inserts a parsed PGP key into the database.
+     */
+    fun insertKey(info: PgpKeyInfo) {
+        val values = ContentValues().apply {
+            put("user_id", info.userId)
+            put("fingerprint", info.fingerprint)
+            put("key_id", info.keyId)
+            put("is_private", if (info.isPrivate) 1 else 0)
+            put("armored_key", info.armoredKey)
+            put("algorithm", info.algorithm)
+            put("bit_length", info.bitLength)
+            put("comment", info.comment)
+            put("created_at", info.createdAt)
+            put("expires_at", info.expiresAt)
+        }
+        writableDatabase.insertWithOnConflict(
+            "pgp_keys",
+            null,
+            values,
+            SQLiteDatabase.CONFLICT_REPLACE
+        )
+    }
 }

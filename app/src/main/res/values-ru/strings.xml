@@ -33,4 +33,6 @@
     <string name="label_notes">Заметки</string>
     <string name="action_create">Создать</string>
     <string name="action_close">Закрыть</string>
+    <string name="action_import">Импорт</string>
+    <string name="cd_import_key">Импортировать ключ</string>
 </resources>

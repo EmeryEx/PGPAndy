@@ -50,4 +50,6 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.9.0'
     implementation 'androidx.compose.foundation:foundation'
     implementation 'androidx.compose.material:material-icons-extended'
+    implementation 'org.bouncycastle:bcprov-jdk18on:1.80'
+    implementation 'org.bouncycastle:bcpg-jdk18on:1.80'
 }
