@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -36,17 +37,17 @@ fun KeyGenerationDialog(
     onDismiss: () -> Unit,
     onCreate: (KeyFormData) -> Unit = {}
 ) {
-    var label by remember { mutableStateOf("") }
-    var name by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var algorithm by remember { mutableStateOf("RSA") }
+    var label by rememberSaveable { mutableStateOf("") }
+    var name by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
+    var algorithm by rememberSaveable { mutableStateOf("RSA") }
     var algorithmExpanded by remember { mutableStateOf(false) }
-    var bitLength by remember { mutableStateOf(2048) }
+    var bitLength by rememberSaveable { mutableStateOf(2048) }
     var bitExpanded by remember { mutableStateOf(false) }
-    var advancedExpanded by remember { mutableStateOf(false) }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
-    var notes by remember { mutableStateOf("") }
+    var advancedExpanded by rememberSaveable { mutableStateOf(false) }
+    var password by rememberSaveable { mutableStateOf("") }
+    var confirmPassword by rememberSaveable { mutableStateOf("") }
+    var notes by rememberSaveable { mutableStateOf("") }
 
     val algorithms = listOf("RSA", "DSA", "ECDSA", "EdDSA")
     val bitOptions = listOf(2048, 3072, 4096)

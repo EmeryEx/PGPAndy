@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.unit.dp
@@ -51,7 +52,7 @@ fun PGPAndyApp(initialLanguageTag: String) {
     var languageTag by remember { mutableStateOf(initialLanguageTag) }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-    var screen by remember { mutableStateOf(Screen.ContactList) }
+    var screen by rememberSaveable { mutableStateOf(Screen.ContactList) }
     var languageMenuExpanded by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
