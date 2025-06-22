@@ -25,6 +25,7 @@
     <string name="title_generate_key">Generar par de claves</string>
     <string name="label_key_label">Etiqueta de clave</string>
     <string name="label_email">Correo electrónico</string>
+    <string name="label_advanced">Avanzado</string>
     <string name="label_algorithm">Algoritmo</string>
     <string name="label_bit_length">Longitud de bits</string>
     <string name="label_password">Contraseña</string>

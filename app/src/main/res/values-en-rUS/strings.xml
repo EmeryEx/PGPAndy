@@ -25,6 +25,7 @@
     <string name="title_generate_key">Generate Key Pair</string>
     <string name="label_key_label">Key Label</string>
     <string name="label_email">Email</string>
+    <string name="label_advanced">Advanced</string>
     <string name="label_algorithm">Algorithm</string>
     <string name="label_bit_length">Bit Length</string>
     <string name="label_password">Password</string>
