@@ -25,6 +25,7 @@
     <string name="title_generate_key">Создать пару ключей</string>
     <string name="label_key_label">Метка ключа</string>
     <string name="label_email">Эл. почта</string>
+    <string name="label_advanced">Дополнительно</string>
     <string name="label_algorithm">Алгоритм</string>
     <string name="label_bit_length">Длина ключа</string>
     <string name="label_password">Пароль</string>
