@@ -182,7 +182,7 @@ fun PGPAndyApp(initialLanguageTag: String) {
                                     DropdownMenuItem(
                                         text = { Text(
                                             text = stringResource(R.string.language_en),
-                                            color = if (languageTag == "en-US") Color.Red else Color.Unspecified
+                                            color = if (languageTag == "en-US") Color(0xFF990020) else Color.Unspecified
                                         ) },
                                         onClick = {
                                             languageMenuExpanded = false
@@ -193,14 +193,11 @@ fun PGPAndyApp(initialLanguageTag: String) {
                                                 (context as? ComponentActivity)?.recreate()
                                             }
                                         },
-                                        modifier = Modifier.background(
-                                            if (languageTag == "en-US") Color(0x33229020) else Color.Transparent
-                                        )
                                     )
                                     DropdownMenuItem(
                                         text = {Text(
                                             text = stringResource(R.string.language_es),
-                                            color = if (languageTag == "es-MX") Color.Red else Color.Unspecified
+                                            color = if (languageTag == "es-MX") Color(0xFF990020) else Color.Unspecified
                                         )},
                                         onClick = {
                                             languageMenuExpanded = false
@@ -214,7 +211,7 @@ fun PGPAndyApp(initialLanguageTag: String) {
                                     )
                                     DropdownMenuItem(text = { Text(
                                         text = stringResource(R.string.language_fr),
-                                        color = if (languageTag == "fr") Color.Red else Color.Unspecified
+                                        color = if (languageTag == "fr") Color(0xFF990020) else Color.Unspecified
                                     ) }, onClick = {
                                         languageMenuExpanded = false
                                         languageTag = "fr"
@@ -222,7 +219,7 @@ fun PGPAndyApp(initialLanguageTag: String) {
                                     })
                                     DropdownMenuItem(text = { Text(
                                         text = stringResource(R.string.language_ru),
-                                        color = if (languageTag == "ru") Color.Red else Color.Unspecified
+                                        color = if (languageTag == "ru") Color(0xFF990020) else Color.Unspecified
                                     ) }, onClick = {
                                         languageMenuExpanded = false
                                         languageTag = "ru"
