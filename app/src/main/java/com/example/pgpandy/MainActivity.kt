@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.Send
 import androidx.compose.ui.graphics.Color
 import androidx.core.os.LocaleListCompat
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.platform.LocalContext
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,6 +47,15 @@ fun PGPAndyApp() {
     val scope = rememberCoroutineScope()
     var screen by remember { mutableStateOf(Screen.ContactList) }
     var languageMenuExpanded by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        darkTheme = DatabaseHelper(context).getPreference("dark_theme") == "1"
+    }
+
+    LaunchedEffect(darkTheme) {
+        DatabaseHelper(context).setPreference("dark_theme", if (darkTheme) "1" else "0")
+    }
 
     MaterialTheme(colorScheme = if (darkTheme) darkColorScheme() else lightColorScheme()) {
         ModalNavigationDrawer(
