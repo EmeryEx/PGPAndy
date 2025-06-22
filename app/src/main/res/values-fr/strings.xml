@@ -22,4 +22,14 @@
     <string name="action_send">Envoyer</string>
     <string name="msg_no_contacts">Aucun contact</string>
     <string name="cd_add_contact">Ajouter un contact</string>
+    <string name="title_generate_key">Générer une paire de clés</string>
+    <string name="label_key_label">Étiquette de clé</string>
+    <string name="label_email">E-mail</string>
+    <string name="label_algorithm">Algorithme</string>
+    <string name="label_bit_length">Longueur en bits</string>
+    <string name="label_password">Mot de passe</string>
+    <string name="label_confirm_password">Confirmer le mot de passe</string>
+    <string name="label_notes">Notes</string>
+    <string name="action_create">Créer</string>
+    <string name="action_close">Fermer</string>
 </resources>
