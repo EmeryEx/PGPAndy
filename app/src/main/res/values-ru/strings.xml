@@ -29,7 +29,7 @@
     <string name="label_algorithm">Алгоритм</string>
     <string name="label_bit_length">Длина ключа</string>
     <string name="label_password">Пароль</string>
-    <string name="label_confirm_password">Подтвердите пароль</string>
+    <string name="label_confirm_password">Подтвердите</string>
     <string name="label_notes">Заметки</string>
     <string name="action_create">Создать</string>
     <string name="action_close">Закрыть</string>

@@ -14,6 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 /** Data container for the key generation form fields. */
 data class KeyFormData(
@@ -77,7 +79,7 @@ fun KeyGenerationDialog(
         },
         title = { Text(stringResource(R.string.title_generate_key)) },
         text = {
-            Column(modifier = Modifier.padding(top = 8.dp)) {
+            Column(modifier = Modifier.padding(top = 8.dp).verticalScroll(rememberScrollState())) {
                 OutlinedTextField(
                     value = label,
                     onValueChange = { label = it },

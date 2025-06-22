@@ -29,7 +29,7 @@
     <string name="label_algorithm">Algoritmo</string>
     <string name="label_bit_length">Longitud de bits</string>
     <string name="label_password">Contraseña</string>
-    <string name="label_confirm_password">Confirmar contraseña</string>
+    <string name="label_confirm_password">Confirmar</string>
     <string name="label_notes">Notas</string>
     <string name="action_create">Crear</string>
     <string name="action_close">Cerrar</string>

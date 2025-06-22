@@ -19,33 +19,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun MessageForm() {
-    var recipient by remember { mutableStateOf("") }
-    var message by remember { mutableStateOf("") }
-
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Text(stringResource(R.string.title_create_message))
-        OutlinedTextField(
-            value = recipient,
-            onValueChange = { recipient = it },
-            label = { Text(stringResource(R.string.label_recipient)) },
-            modifier = Modifier.fillMaxWidth()
-        )
-        OutlinedTextField(
-            value = message,
-            onValueChange = { message = it },
-            label = { Text(stringResource(R.string.label_message)) },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Button(
-            onClick = { /* send */ },
-            modifier = Modifier.align(Alignment.End),
-            shape = RoundedCornerShape(6.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF440020),
-                contentColor = Color.White
-            )
-        ) {
-            Text(stringResource(R.string.action_send))
-        }
     }
 }
