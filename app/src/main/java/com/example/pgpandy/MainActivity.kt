@@ -1,8 +1,6 @@
 package com.example.pgpandy
 
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.icons.Icons
@@ -15,8 +13,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.compose.ui.Alignment
@@ -24,12 +20,9 @@ import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.launch
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.ui.graphics.Color
 import androidx.core.os.LocaleListCompat
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.filled.Key
-import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.ui.platform.LocalContext
 
 class MainActivity : ComponentActivity() {
@@ -84,6 +77,8 @@ fun PGPAndyApp(initialLanguageTag: String) {
                         style = MaterialTheme.typography.titleMedium)
                     NavigationDrawerItem(
                         label = { Text("Inbox") },
+                        selected = screen == Screen.Inbox,
+                        onClick = { screen = Screen.Inbox; scope.launch { drawerState.close() } },
                         shape = RoundedCornerShape(0.dp),
                         colors = NavigationDrawerItemDefaults.colors(
                             selectedContainerColor = Color(0xFF440020),
@@ -92,9 +87,7 @@ fun PGPAndyApp(initialLanguageTag: String) {
                             unselectedTextColor = if (darkTheme) Color.White else Color(0xFF220020),
                             selectedIconColor = Color.White,
                             unselectedIconColor = Color(0xFF220020)
-                        ),
-                        selected = false,
-                        onClick = { }
+                        )
                     )
                     NavigationDrawerItem(
                         label = { Text("Sent") },
@@ -140,6 +133,8 @@ fun PGPAndyApp(initialLanguageTag: String) {
                     )
                     NavigationDrawerItem(
                         label = { Text("Help") },
+                        selected = screen == Screen.Help,
+                        onClick = { screen = Screen.Help; scope.launch { drawerState.close() } },
                         shape = RoundedCornerShape(0.dp),
                         colors = NavigationDrawerItemDefaults.colors(
                             selectedContainerColor = Color(0xFF440020),
@@ -148,9 +143,7 @@ fun PGPAndyApp(initialLanguageTag: String) {
                             unselectedTextColor = if (darkTheme) Color.White else Color(0xFF220020),
                             selectedIconColor = Color.White,
                             unselectedIconColor = Color(0xFF220020)
-                        ),
-                        selected = false,
-                        onClick = { }
+                        )
                     )
                 }
             }
@@ -236,10 +229,12 @@ fun PGPAndyApp(initialLanguageTag: String) {
             ) { padding ->
                 Box(modifier = Modifier.fillMaxSize().padding(padding)) {
                     when (screen) {
-                        Screen.KeyList -> KeyListScreen { screen = Screen.KeyList}
-                        Screen.ContactList -> ContactListScreen { screen = Screen.AddContact }
-                        Screen.AddContact -> ContactForm { screen = Screen.ContactList }
+                        Screen.Inbox -> InboxScreen()
                         Screen.Message -> MessageForm()
+                        Screen.ContactList -> ContactListScreen { screen = Screen.AddContact }
+                        Screen.KeyList -> KeyListScreen { screen = Screen.KeyList }
+                        Screen.AddContact -> ContactForm { screen = Screen.ContactList }
+                        Screen.Help -> HelpScreen()
                     }
                 }
             }
@@ -247,99 +242,5 @@ fun PGPAndyApp(initialLanguageTag: String) {
     }
 }
 
-private enum class Screen { KeyList, ContactList, AddContact, Message }
-
-data class Contact(val name: String, val publicKey: String)
-
-object ContactRepository {
-    val contacts = mutableStateListOf<Contact>()
-}
-
-@Composable
-fun ContactForm(onSaved: () -> Unit) {
-    var name by remember { mutableStateOf("") }
-    var key by remember { mutableStateOf("") }
-
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Text(stringResource(R.string.title_pgp_contact), style = MaterialTheme.typography.titleMedium)
-        OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text(stringResource(R.string.label_name)) }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(value = key, onValueChange = { key = it }, label = { Text(stringResource(R.string.label_public_key)) }, modifier = Modifier.fillMaxWidth())
-        Button(
-            onClick = {
-                ContactRepository.contacts.add(Contact(name, key))
-                onSaved()
-            },
-            modifier = Modifier.align(Alignment.End)
-        ) { Text(stringResource(R.string.action_save)) }
-    }
-}
-
-@Composable
-fun MessageForm() {
-    var recipient by remember { mutableStateOf("") }
-    var message by remember { mutableStateOf("") }
-
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Text(stringResource(R.string.title_create_message), style = MaterialTheme.typography.titleMedium)
-        OutlinedTextField(value = recipient, onValueChange = { recipient = it }, label = { Text(stringResource(R.string.label_recipient)) }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(value = message, onValueChange = { message = it }, label = { Text(stringResource(R.string.label_message)) }, modifier = Modifier.fillMaxWidth())
-        Button(
-            onClick = { /* send */ },
-            modifier = Modifier.align(Alignment.End),
-            shape = RoundedCornerShape(6.dp), // adjust for subtle rounding
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF440020), // custom hex background
-                contentColor = Color.White
-            )
-        ) {
-            Text(stringResource(R.string.action_send))
-        }
-    }
-}
-
-@Composable
-fun ContactListScreen(onAddContact: () -> Unit) {
-    val contacts = ContactRepository.contacts
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        if (contacts.isEmpty()) {
-            Text(stringResource(R.string.msg_no_contacts), modifier = Modifier.align(Alignment.Center))
-        } else {
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(contacts) { contact ->
-                    ListItem(
-                        headlineContent = { Text(contact.name) },
-                        supportingContent = { Text(contact.publicKey) }
-                    )
-                    Divider()
-                }
-            }
-        }
-
-        FloatingActionButton(
-            onClick = onAddContact,
-            modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
-            containerColor = Color(0xFF440020),
-            contentColor = Color.White
-        ) {
-            Icon(Icons.Default.PersonAdd, contentDescription = stringResource(R.string.cd_add_contact))
-        }
-    }
-}
-
-@Composable
-fun KeyListScreen(onAddKey: () -> Unit) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Text("No private keys added.", modifier = Modifier.align(Alignment.Center))
-
-        FloatingActionButton(
-            onClick = onAddKey,
-            modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
-            containerColor = Color(0xFF440020),
-            contentColor = Color.White
-        ) {
-            Icon(Icons.Default.Key, contentDescription = stringResource(R.string.cd_add_contact))
-        }
-    }
-}
+private enum class Screen { Inbox, Message, ContactList, KeyList, AddContact, Help }
 
