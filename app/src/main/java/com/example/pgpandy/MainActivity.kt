@@ -229,7 +229,7 @@ fun PGPAndyApp(initialLanguageTag: String) {
                         Screen.Inbox -> InboxScreen()
                         Screen.Message -> MessageForm()
                         Screen.ContactList -> ContactListScreen { screen = Screen.AddContact }
-                        Screen.KeyList -> KeyListScreen { screen = Screen.KeyList }
+                        Screen.KeyList -> KeyListScreen()
                         Screen.AddContact -> ContactForm { screen = Screen.ContactList }
                         Screen.Help -> HelpScreen()
                     }

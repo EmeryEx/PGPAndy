@@ -22,4 +22,14 @@
     <string name="action_send">Отправить</string>
     <string name="msg_no_contacts">Контакты отсутствуют</string>
     <string name="cd_add_contact">Добавить контакт</string>
+    <string name="title_generate_key">Создать пару ключей</string>
+    <string name="label_key_label">Метка ключа</string>
+    <string name="label_email">Эл. почта</string>
+    <string name="label_algorithm">Алгоритм</string>
+    <string name="label_bit_length">Длина ключа</string>
+    <string name="label_password">Пароль</string>
+    <string name="label_confirm_password">Подтвердите пароль</string>
+    <string name="label_notes">Заметки</string>
+    <string name="action_create">Создать</string>
+    <string name="action_close">Закрыть</string>
 </resources>
