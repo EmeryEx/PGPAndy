@@ -35,4 +35,6 @@
     <string name="action_close">Close</string>
     <string name="action_import">Import</string>
     <string name="cd_import_key">Import Key</string>
+    <string name="msg_no_private_keys">No private keys yet.</string>
+    <string name="cd_delete_key">Delete key</string>
 </resources>

@@ -35,4 +35,6 @@
     <string name="action_close">Fermer</string>
     <string name="action_import">Importer</string>
     <string name="cd_import_key">Importer la clé</string>
+    <string name="msg_no_private_keys">Aucune clé privée</string>
+    <string name="cd_delete_key">Supprimer la clé</string>
 </resources>
