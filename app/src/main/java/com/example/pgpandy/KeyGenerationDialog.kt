@@ -17,6 +17,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.platform.LocalContext
+import com.example.pgpandy.KeyGenerationService
 
 /** Data container for the key generation form fields. */
 data class KeyFormData(
@@ -52,12 +54,16 @@ fun KeyGenerationDialog(
     val algorithms = listOf("RSA", "DSA", "ECDSA", "EdDSA")
     val bitOptions = listOf(2048, 3072, 4096)
 
+    val context = LocalContext.current
+    val formValid = label.isNotBlank() && (name.isNotBlank() || email.isNotBlank())
+
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
-            TextButton(onClick = {
-                onCreate(
-                    KeyFormData(
+            TextButton(
+                enabled = formValid,
+                onClick = {
+                    val data = KeyFormData(
                         label,
                         name,
                         email,
@@ -67,9 +73,11 @@ fun KeyGenerationDialog(
                         confirmPassword,
                         notes
                     )
-                )
-                onDismiss()
-            }) {
+                    KeyGenerationService(context).generateAndStore(data)
+                    onCreate(data)
+                    onDismiss()
+                }
+            ) {
                 Text(stringResource(R.string.action_create))
             }
         },
