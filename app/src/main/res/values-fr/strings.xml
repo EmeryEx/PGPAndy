@@ -37,4 +37,8 @@
     <string name="cd_import_key">Importer la clé</string>
     <string name="msg_no_private_keys">Aucune clé privée</string>
     <string name="cd_delete_key">Supprimer la clé</string>
+    <string name="confirm_delete_key">Supprimer cette clé ?</string>
+    <string name="action_delete">Supprimer</string>
+    <string name="action_copy">Copier dans le presse-papiers</string>
+    <string name="title_private_key">Clé privée</string>
 </resources>

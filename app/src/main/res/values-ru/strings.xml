@@ -37,4 +37,8 @@
     <string name="cd_import_key">Импортировать ключ</string>
     <string name="msg_no_private_keys">Пока нет приватных ключей</string>
     <string name="cd_delete_key">Удалить ключ</string>
+    <string name="confirm_delete_key">Удалить этот ключ?</string>
+    <string name="action_delete">Удалить</string>
+    <string name="action_copy">Копировать в буфер</string>
+    <string name="title_private_key">Приватный ключ</string>
 </resources>
