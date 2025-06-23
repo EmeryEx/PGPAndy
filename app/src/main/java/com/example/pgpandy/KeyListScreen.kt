@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import java.text.SimpleDateFormat
@@ -38,7 +39,6 @@ fun KeyListScreen(isDarkTheme: Boolean) {
     var keys by remember { mutableStateOf(listOf<PgpKeyInfo>()) }
     var keyToDelete by remember { mutableStateOf<PgpKeyInfo?>(null) }
     var keyToView by remember { mutableStateOf<PgpKeyInfo?>(null) }
-    val clipboardManager = LocalClipboardManager.current
 
     fun refresh() {
         keys = DatabaseHelper(context).getPrivateKeys()
@@ -126,18 +126,34 @@ fun KeyListScreen(isDarkTheme: Boolean) {
                 },
                 title = { Text(stringResource(R.string.title_private_key)) },
                 text = {
-                    Column {
-                        OutlinedTextField(
-                            value = viewKey.armoredKey,
-                            onValueChange = {},
-                            readOnly = true,
+                    val clipboardManager = LocalClipboardManager.current
+
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .heightIn(min = 150.dp)
+                                .height(200.dp)
+                                .padding(12.dp)
                                 .verticalScroll(rememberScrollState())
-                        )
-                        Spacer(Modifier.height(8.dp))
-                        Button(onClick = { clipboardManager.setText(AnnotatedString(viewKey.armoredKey)) }) {
+                        ) {
+                            Text(
+                                text = viewKey.armoredKey,
+                                fontSize = 12.sp,
+                                color = if (isDarkTheme) Color.White else Color.Black
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Button(
+                            onClick = {
+                                clipboardManager.setText(AnnotatedString(viewKey.armoredKey))
+                            },
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            shape = RoundedCornerShape(3.dp) // 👈 Rounded corners
+                        ) {
+                            Icon(Icons.Default.ContentCopy, contentDescription = null)
+                            Spacer(Modifier.width(8.dp))
                             Text(stringResource(R.string.action_copy))
                         }
                     }
