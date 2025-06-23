@@ -2,6 +2,7 @@ package com.example.pgpandy
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -23,9 +24,10 @@ import java.util.Locale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.sp
 
 @Composable
-fun KeyListScreen() {
+fun KeyListScreen(isDarkTheme: Boolean) {
     var showDialog by rememberSaveable { mutableStateOf(false) }
     val context = LocalContext.current
     var keys by remember { mutableStateOf(listOf<PgpKeyInfo>()) }
@@ -51,22 +53,29 @@ fun KeyListScreen() {
         if (keys.isEmpty()) {
             Text(stringResource(R.string.msg_no_private_keys), modifier = Modifier.align(Alignment.Center))
         } else {
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(modifier = Modifier.fillMaxSize().padding(bottom = 100.dp)) {
                 items(keys) { key ->
                     Card(
                         modifier = Modifier
                             .padding(horizontal = 16.dp, vertical = 8.dp)
                             .fillMaxWidth()
-                            .shadow(2.dp, RoundedCornerShape(8.dp)),
-                        colors = CardDefaults.cardColors()
+                            .shadow(2.dp, RoundedCornerShape(8.dp)), // Slightly larger shadow and softer radius
+                        colors = CardDefaults.cardColors(
+                            containerColor = if (isDarkTheme) Color(0xFF363636) else Color.White,
+                        ),
+                        shape = RoundedCornerShape(8.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp), // Jobs would not tolerate gaudy shadows
+                        border = if (isDarkTheme) BorderStroke(0.dp, Color.Black) else BorderStroke(0.5.dp, Color(0xFFDDDDDD)) // Subtle gray outline
                     ) {
                         Row(modifier = Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
                             Column(modifier = Modifier.weight(1f)) {
-                                Text(text = key.comment ?: key.userId ?: key.fingerprint.take(8))
+                                Text(text = key.comment ?: key.userId ?:"?")
+                                Text(text = "Fingerprint:", fontSize = 11.sp, color = if (isDarkTheme) Color(0xFFEEAAAA) else Color(0xFFAA5555))
+                                Text(text = key.fingerprint, fontSize = 10.sp)
                                 key.createdAt?.let {
                                     val date = Date(it * 1000)
                                     val fmt = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                                    Text(fmt.format(date))
+                                    Text("Generated: " + fmt.format(date), fontSize = 12.sp)
                                 }
                             }
                             IconButton(onClick = {
