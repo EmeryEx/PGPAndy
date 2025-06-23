@@ -18,6 +18,11 @@ import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.FileOpen
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -31,6 +36,9 @@ fun KeyListScreen(isDarkTheme: Boolean) {
     var showDialog by rememberSaveable { mutableStateOf(false) }
     val context = LocalContext.current
     var keys by remember { mutableStateOf(listOf<PgpKeyInfo>()) }
+    var keyToDelete by remember { mutableStateOf<PgpKeyInfo?>(null) }
+    var keyToView by remember { mutableStateOf<PgpKeyInfo?>(null) }
+    val clipboardManager = LocalClipboardManager.current
 
     fun refresh() {
         keys = DatabaseHelper(context).getPrivateKeys()
@@ -56,16 +64,17 @@ fun KeyListScreen(isDarkTheme: Boolean) {
             LazyColumn(modifier = Modifier.fillMaxSize().padding(bottom = 100.dp)) {
                 items(keys) { key ->
                     Card(
+                        onClick = { keyToView = key },
                         modifier = Modifier
                             .padding(horizontal = 16.dp, vertical = 8.dp)
                             .fillMaxWidth()
-                            .shadow(2.dp, RoundedCornerShape(8.dp)), // Slightly larger shadow and softer radius
+                            .shadow(2.dp, RoundedCornerShape(8.dp)),
                         colors = CardDefaults.cardColors(
                             containerColor = if (isDarkTheme) Color(0xFF363636) else Color.White,
                         ),
                         shape = RoundedCornerShape(8.dp),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp), // Jobs would not tolerate gaudy shadows
-                        border = if (isDarkTheme) BorderStroke(0.dp, Color.Black) else BorderStroke(0.5.dp, Color(0xFFDDDDDD)) // Subtle gray outline
+                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                        border = if (isDarkTheme) BorderStroke(0.dp, Color.Black) else BorderStroke(0.5.dp, Color(0xFFDDDDDD))
                     ) {
                         Row(modifier = Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
                             Column(modifier = Modifier.weight(1f)) {
@@ -78,16 +87,62 @@ fun KeyListScreen(isDarkTheme: Boolean) {
                                     Text("Generated: " + fmt.format(date), fontSize = 12.sp)
                                 }
                             }
-                            IconButton(onClick = {
-                                DatabaseHelper(context).deleteKey(key.fingerprint)
-                                refresh()
-                            }) {
+                            IconButton(onClick = { keyToDelete = key }) {
                                 Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.cd_delete_key))
                             }
                         }
                     }
                 }
             }
+        }
+
+        keyToDelete?.let { pending ->
+            AlertDialog(
+                onDismissRequest = { keyToDelete = null },
+                confirmButton = {
+                    TextButton(onClick = {
+                        DatabaseHelper(context).deleteKey(pending.fingerprint)
+                        keyToDelete = null
+                        refresh()
+                    }) { Text(stringResource(R.string.action_delete)) }
+                },
+                dismissButton = {
+                    TextButton(onClick = { keyToDelete = null }) {
+                        Text(stringResource(R.string.action_close))
+                    }
+                },
+                title = { Text(stringResource(R.string.cd_delete_key)) },
+                text = { Text(stringResource(R.string.confirm_delete_key)) }
+            )
+        }
+
+        keyToView?.let { viewKey ->
+            AlertDialog(
+                onDismissRequest = { keyToView = null },
+                confirmButton = {
+                    TextButton(onClick = { keyToView = null }) {
+                        Text(stringResource(R.string.action_close))
+                    }
+                },
+                title = { Text(stringResource(R.string.title_private_key)) },
+                text = {
+                    Column {
+                        OutlinedTextField(
+                            value = viewKey.armoredKey,
+                            onValueChange = {},
+                            readOnly = true,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = 150.dp)
+                                .verticalScroll(rememberScrollState())
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        Button(onClick = { clipboardManager.setText(AnnotatedString(viewKey.armoredKey)) }) {
+                            Text(stringResource(R.string.action_copy))
+                        }
+                    }
+                }
+            )
         }
 
         FloatingActionButton(

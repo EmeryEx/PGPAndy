@@ -37,4 +37,8 @@
     <string name="cd_import_key">Import Key</string>
     <string name="msg_no_private_keys">No private keys yet.</string>
     <string name="cd_delete_key">Delete key</string>
+    <string name="confirm_delete_key">Delete this key?</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_copy">Copy to Clipboard</string>
+    <string name="title_private_key">Private Key</string>
 </resources>
