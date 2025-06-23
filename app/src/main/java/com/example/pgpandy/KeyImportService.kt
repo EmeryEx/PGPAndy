@@ -39,7 +39,7 @@ class KeyImportService(private val context: Context) {
         val keyId = java.lang.Long.toHexString(pubKey.keyID).uppercase()
         val userId = pubKey.userIDs.asSequence().firstOrNull()
         val algorithm = algorithmName(pubKey.algorithm)
-        val bitLength = pubKey.bitStrength()
+        val bitLength = pubKey.bitStrength
         val createdAt = pubKey.creationTime.time / 1000
         val expiresAt = if (pubKey.validSeconds > 0) createdAt + pubKey.validSeconds else null
 

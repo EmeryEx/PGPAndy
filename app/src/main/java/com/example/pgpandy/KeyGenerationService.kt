@@ -4,13 +4,13 @@ import android.content.Context
 import java.io.ByteArrayOutputStream
 import java.nio.charset.StandardCharsets
 import java.security.KeyPairGenerator
-import java.security.Security
 import java.security.SecureRandom
+import java.security.Security
 import java.util.Date
-import org.bouncycastle.bcpg.ArmoredOutputStream
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.bouncycastle.openpgp.*
 import org.bouncycastle.openpgp.operator.jcajce.*
+import org.bouncycastle.bcpg.ArmoredOutputStream
 
 class KeyGenerationService(private val context: Context) {
     fun generateAndStore(data: KeyFormData) {
@@ -35,14 +35,13 @@ class KeyGenerationService(private val context: Context) {
         if (Security.getProvider("BC") == null) {
             Security.addProvider(BouncyCastleProvider())
         }
-        val kpg = KeyPairGenerator.getInstance("RSA", "BC")
+        val kpg = KeyPairGenerator.getInstance("RSA")
         kpg.initialize(bitLength, SecureRandom())
         val kp = kpg.generateKeyPair()
         val pgpKp = JcaPGPKeyPair(PGPPublicKey.RSA_GENERAL, kp, Date())
-        val sha1Calc = JcaPGPDigestCalculatorProviderBuilder().build().get(HashAlgorithmTags.SHA1)
-        val contentSigner = JcaPGPContentSignerBuilder(pgpKp.publicKey.algorithm, HashAlgorithmTags.SHA256).setProvider("BC")
+        val sha1Calc = JcaPGPDigestCalculatorProviderBuilder().build().get(PGPUtil.SHA1)
+        val contentSigner = JcaPGPContentSignerBuilder(pgpKp.publicKey.algorithm, PGPUtil.SHA256).setProvider("AndroidOpenSSL")
         val encryptor = JcePBESecretKeyEncryptorBuilder(PGPEncryptedData.AES_256, sha1Calc)
-            .setProvider("BC")
             .build(passphrase)
         val keyRingGen = PGPKeyRingGenerator(
             PGPSignature.POSITIVE_CERTIFICATION,
@@ -82,7 +81,7 @@ class KeyGenerationService(private val context: Context) {
         val keyId = java.lang.Long.toHexString(pubKey.keyID).uppercase()
         val userId = pubKey.userIDs.asSequence().firstOrNull()
         val algorithm = algorithmName(pubKey.algorithm)
-        val bitLength = pubKey.bitStrength()
+        val bitLength = pubKey.bitStrength
         val createdAt = pubKey.creationTime.time / 1000
         val expiresAt = if (pubKey.validSeconds > 0) createdAt + pubKey.validSeconds else null
         return PgpKeyInfo(

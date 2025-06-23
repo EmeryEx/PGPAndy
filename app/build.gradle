@@ -38,6 +38,12 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
+
+    packaging {
+        resources {
+            pickFirsts += "META-INF/versions/9/OSGI-INF/MANIFEST.MF"
+        }
+    }
 }
 
 dependencies {
@@ -50,6 +56,6 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.9.0'
     implementation 'androidx.compose.foundation:foundation'
     implementation 'androidx.compose.material:material-icons-extended'
-    implementation 'org.bouncycastle:bcprov-jdk18on:1.80'
-    implementation 'org.bouncycastle:bcpg-jdk18on:1.80'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.68'
+    implementation 'org.bouncycastle:bcpg-jdk15on:1.68'
 }
