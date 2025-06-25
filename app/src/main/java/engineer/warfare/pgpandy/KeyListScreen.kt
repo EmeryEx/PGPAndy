@@ -2,6 +2,8 @@ package engineer.warfare.pgpandy
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import android.provider.OpenableColumns
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -49,10 +51,30 @@ fun KeyListScreen(isDarkTheme: Boolean) {
         ActivityResultContracts.OpenDocument()
     ) { uri ->
         uri?.let {
+            val fileName = context.contentResolver.query(
+                it,
+                arrayOf(OpenableColumns.DISPLAY_NAME),
+                null,
+                null,
+                null
+            )?.use { cursor ->
+                val idx = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                if (idx >= 0 && cursor.moveToFirst()) cursor.getString(idx) else null
+            }
+
+            if (fileName == null || !fileName.endsWith(".asc", ignoreCase = true)) {
+                Toast.makeText(context, context.getString(R.string.msg_invalid_key_file), Toast.LENGTH_LONG).show()
+                return@let
+            }
+
             context.contentResolver.openInputStream(it)?.use { stream ->
                 val armored = stream.bufferedReader().readText()
-                KeyImportService(context).importArmoredKey(armored)
-                refresh()
+                try {
+                    KeyImportService(context).importArmoredKey(armored)
+                    refresh()
+                } catch (_: Exception) {
+                    Toast.makeText(context, context.getString(R.string.msg_invalid_key_file), Toast.LENGTH_LONG).show()
+                }
             }
         }
     }

@@ -36,6 +36,7 @@
     <string name="action_import">Importer</string>
     <string name="cd_import_key">Importer la clé</string>
     <string name="msg_no_private_keys">Aucune clé privée</string>
+    <string name="msg_invalid_key_file">Veuillez sélectionner un fichier .asc valide</string>
     <string name="cd_delete_key">Supprimer la clé</string>
     <string name="confirm_delete_key">Supprimer cette clé ?</string>
     <string name="action_delete">Supprimer</string>
