@@ -47,4 +47,5 @@
     <string name="action_copy_private_key">Copiar clave privada</string>
     <string name="msg_no_keys_found">No se encontraron claves en el archivo</string>
     <string name="msg_import_failed">Error al importar clave: %1$s</string>
+    <string name="msg_public_key_required">El archivo debe contener una clave pública</string>
 </resources>
