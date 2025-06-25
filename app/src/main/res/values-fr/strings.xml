@@ -47,4 +47,5 @@
     <string name="action_copy_private_key">Copier la clé privée</string>
     <string name="msg_no_keys_found">Aucune clé trouvée dans le fichier</string>
     <string name="msg_import_failed">Échec de l\'importation de la clé : %1$s</string>
+    <string name="msg_public_key_required">Le fichier doit contenir une clé publique</string>
 </resources>
