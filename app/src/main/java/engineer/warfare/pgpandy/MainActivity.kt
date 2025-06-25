@@ -1,4 +1,4 @@
-package com.example.pgpandy
+package engineer.warfare.pgpandy
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.launch
 import androidx.appcompat.app.AppCompatDelegate

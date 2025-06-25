@@ -1,4 +1,4 @@
-package com.example.pgpandy
+package engineer.warfare.pgpandy
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.platform.LocalContext
-import com.example.pgpandy.KeyGenerationService
 
 /** Data container for the key generation form fields. */
 data class KeyFormData(

@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.pgpandy'
+    namespace 'engineer.warfare.pgpandy'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.pgpandy"
+        applicationId "com.emeryex.pgpandy"
         minSdk 24
         targetSdk 34
         versionCode 1

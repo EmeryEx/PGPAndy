@@ -1,4 +1,4 @@
-package com.example.pgpandy
+package engineer.warfare.pgpandy
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,8 +8,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun InboxScreen() {
+fun HelpScreen() {
     Box(modifier = Modifier.fillMaxSize()) {
-        Text("Inbox", modifier = Modifier.align(Alignment.Center))
+        Text("Help", modifier = Modifier.align(Alignment.Center))
     }
 }

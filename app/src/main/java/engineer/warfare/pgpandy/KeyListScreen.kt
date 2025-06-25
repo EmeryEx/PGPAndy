@@ -1,4 +1,4 @@
-package com.example.pgpandy
+package engineer.warfare.pgpandy
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -18,7 +18,6 @@ import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.FileOpen
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.filled.ContentCopy
@@ -163,15 +162,26 @@ fun KeyListScreen(isDarkTheme: Boolean) {
 
         FloatingActionButton(
             onClick = { importLauncher.launch(arrayOf("*/*")) },
-            modifier = Modifier.align(Alignment.BottomStart).padding(16.dp),
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(16.dp),
             containerColor = Color(0xFF440020),
-            contentColor = Color.White
+            contentColor = Color.White,
+            shape = RoundedCornerShape(16.dp) // optional, makes it pill-shaped
         ) {
-            Icon(
-                Icons.Default.FileOpen,
-                contentDescription = stringResource(R.string.cd_import_key)
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.padding(horizontal = 12.dp)
+            ) {
+                Icon(
+                    Icons.Default.FileOpen,
+                    contentDescription = stringResource(R.string.cd_import_key)
+                )
+                Text(text = "Import .asc")
+            }
         }
+
 
         FloatingActionButton(
             onClick = { showDialog = true },
