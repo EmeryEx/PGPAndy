@@ -70,10 +70,15 @@ fun KeyListScreen(isDarkTheme: Boolean) {
             context.contentResolver.openInputStream(it)?.use { stream ->
                 val armored = stream.bufferedReader().readText()
                 try {
-                    KeyImportService(context).importArmoredKey(armored)
-                    refresh()
-                } catch (_: Exception) {
-                    Toast.makeText(context, context.getString(R.string.msg_invalid_key_file), Toast.LENGTH_LONG).show()
+                    val imported = KeyImportService(context).importArmoredKey(armored)
+                    if (imported == 0) {
+                        Toast.makeText(context, context.getString(R.string.msg_no_keys_found), Toast.LENGTH_LONG).show()
+                    } else {
+                        refresh()
+                    }
+                } catch (e: Exception) {
+                    val msg = context.getString(R.string.msg_import_failed, e.message ?: "")
+                    Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
                 }
             }
         }
