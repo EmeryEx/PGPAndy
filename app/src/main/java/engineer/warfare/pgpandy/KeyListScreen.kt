@@ -23,6 +23,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
+import engineer.warfare.pgpandy.PgpKeyUtils
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -123,9 +124,12 @@ fun KeyListScreen(isDarkTheme: Boolean) {
                         Text(stringResource(R.string.action_close))
                     }
                 },
-                title = { Text(stringResource(R.string.title_private_key)) },
+                title = { Text(stringResource(R.string.title_public_key)) },
                 text = {
                     val clipboardManager = LocalClipboardManager.current
+                    val publicKey = remember(viewKey) {
+                        PgpKeyUtils.extractPublicKey(viewKey.armoredKey) ?: ""
+                    }
 
                     Column(modifier = Modifier.fillMaxWidth()) {
                         Box(
@@ -136,7 +140,7 @@ fun KeyListScreen(isDarkTheme: Boolean) {
                                 .verticalScroll(rememberScrollState())
                         ) {
                             Text(
-                                text = viewKey.armoredKey,
+                                text = publicKey,
                                 fontSize = 12.sp,
                                 color = if (isDarkTheme) Color.White else Color.Black
                             )
@@ -146,14 +150,28 @@ fun KeyListScreen(isDarkTheme: Boolean) {
 
                         Button(
                             onClick = {
-                                clipboardManager.setText(AnnotatedString(viewKey.armoredKey))
+                                clipboardManager.setText(AnnotatedString(publicKey))
                             },
                             modifier = Modifier.align(Alignment.CenterHorizontally),
                             shape = RoundedCornerShape(3.dp) // 👈 Rounded corners
                         ) {
                             Icon(Icons.Default.ContentCopy, contentDescription = null)
                             Spacer(Modifier.width(8.dp))
-                            Text(stringResource(R.string.action_copy))
+                            Text(stringResource(R.string.action_copy_public_key))
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Button(
+                            onClick = {
+                                clipboardManager.setText(AnnotatedString(viewKey.armoredKey))
+                            },
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            shape = RoundedCornerShape(3.dp)
+                        ) {
+                            Icon(Icons.Default.ContentCopy, contentDescription = null)
+                            Spacer(Modifier.width(8.dp))
+                            Text(stringResource(R.string.action_copy_private_key))
                         }
                     }
                 }
