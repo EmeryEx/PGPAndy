@@ -7,6 +7,11 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import android.provider.OpenableColumns
 import android.widget.Toast
+import org.bouncycastle.openpgp.PGPObjectFactory
+import org.bouncycastle.openpgp.PGPPublicKeyRing
+import org.bouncycastle.openpgp.PGPSecretKeyRing
+import org.bouncycastle.openpgp.PGPUtil
+import org.bouncycastle.openpgp.operator.jcajce.JcaKeyFingerprintCalculator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material.icons.filled.FileOpen
@@ -52,7 +57,20 @@ fun ContactListScreen(onAddContact: () -> Unit) {
             context.contentResolver.openInputStream(it)?.use { stream ->
                 val armored = stream.bufferedReader().readText()
                 try {
-                    val imported = PublicKeyImportService(context).importPublicKeys(armored)
+                    // Validate that only public keys are present before importing
+                    val decoder = PGPUtil.getDecoderStream(armored.byteInputStream())
+                    val factory = PGPObjectFactory(decoder, JcaKeyFingerprintCalculator())
+                    var found = false
+                    while (true) {
+                        val obj = factory.nextObject() ?: break
+                        when (obj) {
+                            is PGPSecretKeyRing -> throw IllegalArgumentException("private")
+                            is PGPPublicKeyRing -> found = true
+                        }
+                    }
+                    if (!found) throw IllegalArgumentException("none")
+
+                    val imported = KeyImportService(context).importArmoredKey(armored)
                     if (imported == 0) {
                         Toast.makeText(context, context.getString(R.string.msg_no_keys_found), Toast.LENGTH_LONG).show()
                     }
