@@ -228,7 +228,7 @@ fun PGPAndyApp(initialLanguageTag: String) {
                     when (screen) {
                         Screen.Inbox -> InboxScreen()
                         Screen.Message -> MessageForm()
-                        Screen.ContactList -> ContactListScreen { screen = Screen.AddContact }
+                        Screen.ContactList -> ContactListScreen(isDarkTheme = darkTheme) { screen = Screen.AddContact }
                         Screen.KeyList -> KeyListScreen(isDarkTheme = darkTheme)
                         Screen.AddContact -> ContactForm { screen = Screen.ContactList }
                         Screen.Help -> HelpScreen()

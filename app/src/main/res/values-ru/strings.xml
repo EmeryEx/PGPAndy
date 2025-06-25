@@ -36,6 +36,7 @@
     <string name="action_import">Импорт</string>
     <string name="cd_import_key">Импортировать ключ</string>
     <string name="msg_no_private_keys">Пока нет приватных ключей</string>
+    <string name="msg_no_public_keys">Пока нет публичных ключей</string>
     <string name="msg_invalid_key_file">Пожалуйста, выберите корректный файл .asc</string>
     <string name="cd_delete_key">Удалить ключ</string>
     <string name="confirm_delete_key">Удалить этот ключ?</string>
