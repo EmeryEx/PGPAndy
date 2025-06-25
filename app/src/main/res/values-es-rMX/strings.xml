@@ -41,4 +41,7 @@
     <string name="action_delete">Eliminar</string>
     <string name="action_copy">Copiar al portapapeles</string>
     <string name="title_private_key">Clave privada</string>
+    <string name="title_public_key">Clave pública</string>
+    <string name="action_copy_public_key">Copiar clave pública</string>
+    <string name="action_copy_private_key">Copiar clave privada</string>
 </resources>
