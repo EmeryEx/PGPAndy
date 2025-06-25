@@ -142,6 +142,35 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null
     }
 
     /**
+     * Returns all public keys stored in the database.
+     */
+    fun getPublicKeys(): List<PgpKeyInfo> {
+        val keys = mutableListOf<PgpKeyInfo>()
+        readableDatabase.rawQuery(
+            "SELECT user_id, fingerprint, key_id, is_private, armored_key, algorithm, bit_length, comment, created_at, expires_at FROM pgp_keys WHERE is_private = 0",
+            null
+        ).use { cursor ->
+            while (cursor.moveToNext()) {
+                keys.add(
+                    PgpKeyInfo(
+                        userId = cursor.getString(0),
+                        fingerprint = cursor.getString(1),
+                        keyId = cursor.getString(2),
+                        isPrivate = cursor.getInt(3) == 1,
+                        armoredKey = cursor.getString(4),
+                        algorithm = cursor.getString(5),
+                        bitLength = if (cursor.isNull(6)) null else cursor.getInt(6),
+                        comment = cursor.getString(7),
+                        createdAt = if (cursor.isNull(8)) null else cursor.getLong(8),
+                        expiresAt = if (cursor.isNull(9)) null else cursor.getLong(9)
+                    )
+                )
+            }
+        }
+        return keys
+    }
+
+    /**
      * Deletes a key by its fingerprint.
      */
     fun deleteKey(fingerprint: String) {
