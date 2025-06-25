@@ -15,47 +15,49 @@ class KeyImportService(private val context: Context) {
      * database. The method extracts some basic metadata such as fingerprint and
      * user id using BouncyCastle.
      */
-    fun importArmoredKey(armored: String) {
+    fun importArmoredKey(armored: String): Int {
         val decoder = PGPUtil.getDecoderStream(armored.byteInputStream())
         val factory = PGPObjectFactory(decoder, JcaKeyFingerprintCalculator())
-        var keyRing: Any? = null
+        var count = 0
         while (true) {
             val obj = factory.nextObject() ?: break
-            if (obj is PGPSecretKeyRing || obj is PGPPublicKeyRing) {
-                keyRing = obj
-                break
+            if (obj !is PGPSecretKeyRing && obj !is PGPPublicKeyRing) continue
+
+            val out = java.io.ByteArrayOutputStream()
+            org.bouncycastle.bcpg.ArmoredOutputStream(out).use { (obj as org.bouncycastle.openpgp.PGPKeyRing).encode(it) }
+            val ringArmored = out.toString(java.nio.charset.StandardCharsets.UTF_8.name())
+
+            val isPrivate = obj is PGPSecretKeyRing
+            val pubKey = when (obj) {
+                is PGPSecretKeyRing -> obj.publicKey
+                is PGPPublicKeyRing -> obj.publicKey
+                else -> continue
             }
+
+            val fingerprint = pubKey.fingerprint.joinToString("") { "%02X".format(it) }
+            val keyId = java.lang.Long.toHexString(pubKey.keyID).uppercase()
+            val userId = pubKey.userIDs.asSequence().firstOrNull()
+            val algorithm = algorithmName(pubKey.algorithm)
+            val bitLength = pubKey.bitStrength
+            val createdAt = pubKey.creationTime.time / 1000
+            val expiresAt = if (pubKey.validSeconds > 0) createdAt + pubKey.validSeconds else null
+
+            val info = PgpKeyInfo(
+                userId = userId,
+                fingerprint = fingerprint,
+                keyId = keyId,
+                isPrivate = isPrivate,
+                armoredKey = ringArmored,
+                algorithm = algorithm,
+                bitLength = bitLength,
+                comment = null,
+                createdAt = createdAt,
+                expiresAt = expiresAt
+            )
+            DatabaseHelper(context).insertKey(info)
+            count++
         }
-        if (keyRing == null) return
-
-        val isPrivate = keyRing is PGPSecretKeyRing
-        val pubKey = when (keyRing) {
-            is PGPSecretKeyRing -> keyRing.publicKey
-            is PGPPublicKeyRing -> keyRing.publicKey
-            else -> return
-        }
-
-        val fingerprint = pubKey.fingerprint.joinToString("") { "%02X".format(it) }
-        val keyId = java.lang.Long.toHexString(pubKey.keyID).uppercase()
-        val userId = pubKey.userIDs.asSequence().firstOrNull()
-        val algorithm = algorithmName(pubKey.algorithm)
-        val bitLength = pubKey.bitStrength
-        val createdAt = pubKey.creationTime.time / 1000
-        val expiresAt = if (pubKey.validSeconds > 0) createdAt + pubKey.validSeconds else null
-
-        val info = PgpKeyInfo(
-            userId = userId,
-            fingerprint = fingerprint,
-            keyId = keyId,
-            isPrivate = isPrivate,
-            armoredKey = armored,
-            algorithm = algorithm,
-            bitLength = bitLength,
-            comment = null,
-            createdAt = createdAt,
-            expiresAt = expiresAt
-        )
-        DatabaseHelper(context).insertKey(info)
+        return count
     }
 
     private fun algorithmName(tag: Int): String {

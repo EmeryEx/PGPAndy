@@ -45,4 +45,6 @@
     <string name="title_public_key">Публичный ключ</string>
     <string name="action_copy_public_key">Копировать публичный ключ</string>
     <string name="action_copy_private_key">Копировать приватный ключ</string>
+    <string name="msg_no_keys_found">В файле не найдено ключей</string>
+    <string name="msg_import_failed">Ошибка импорта ключа: %1$s</string>
 </resources>
